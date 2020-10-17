@@ -21,16 +21,18 @@ public:
     double get_xmax();
     double get_ymin();
     double get_ymax();
-    double dx_forward(std::vector<double> function, int n);
-    double dx_backward(std::vector<double> function, int n);
-    double dy_forward(std::vector<double> function, int n);
-    double dy_backward(std::vector<double> function, int n);
+    double max_double(double a, double b);
+    double min_double(double a, double b);
+    double dx_forward(std::vector<double>& function, int n);
+    double dx_backward(std::vector<double>& function, int n);
+    double dy_forward(std::vector<double>& function, int n);
+    double dy_backward(std::vector<double>& function, int n);
     double x_from_n(int n);
     double y_from_n(int n);
     double minmod(double D1, double D2);
     double minmod_Cell(double DX1, double DX2, double DY1, double DY2);
-    double dx_centered(std::vector<double> function, int n);
-    double dy_centered(std::vector<double> function, int n);
+    double dx_centered(std::vector<double>& function, int n);
+    double dy_centered(std::vector<double>& function, int n);
 
     int get_N();
     int get_M();

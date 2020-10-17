@@ -1,7 +1,7 @@
 #ifndef SETUP_H
 #define SETUP_H
 #include <vector>
-#include </Users/shaynabennett/Important_Files/grid2d.h>
+#include </Users/shaynabennett/MATH233_HOMEWORK/Important_Files/grid2d.h>
 
 class Setup
 {
@@ -11,6 +11,7 @@ public:
     double calc_dt(double coef);
     std::vector<double> meshgridX();
     std::vector<double> meshgridY();
+    std::vector<double> initial_condREN(std::vector<double> X, std::vector<double> Y);
     std::vector<double> initial_cond(std::vector<double> X, std::vector<double> Y); 
     std::vector<double> true_solution(std::vector<double> X, std::vector<double> Y, std::vector<double> VelX, std::vector<double> VelY, double dt);
     std::vector<double> true_solution2(std::vector<double> X, std::vector<double> Y, std::vector<double> VelX, std::vector<double> VelY, double dt);

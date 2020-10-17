@@ -1,7 +1,8 @@
-#include "grid2d.h"
+#include </Users/shaynabennett/MATH233_HOMEWORK/Important_Files/grid2d.h>
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <omp.h>
 
 using namespace std;
 
@@ -77,9 +78,28 @@ double Grid2D::y_from_n(int n){
     return  ymin + dy*j_from_n(n);
 }
 
+double Grid2D::max_double(double a, double b){
+    if (a>b){
+        return a;
+    }
+    else{
+        return b;
+    }
+}
+
+double Grid2D::min_double(double a, double b){
+    if (a<b){
+        return a;
+    }
+    else{
+        return b;
+    }
+}
+
+
 double Grid2D::minmod(double D1, double D2){
     if ((D1>=0.0 && D2<=0.0) || (D1<=0.0 && D2>=0.0)){
-            return 0.0;
+        return 0.0;
     }
     else{
         if (abs(D1)<=abs(D2)){
@@ -89,14 +109,14 @@ double Grid2D::minmod(double D1, double D2){
             return D2;
         }
         else{
-            cout<<"Warning! Case not found in minmod."<<endl;
+            cout<<"Warning! Case not found in minmod. D1="<<D1<<" D2=" << D2 <<endl;
         }
     }
 }
 
 double Grid2D::minmod_Cell(double D1, double D2, double D3, double D4){
     if ((D1>=0.0 && D2<=0.0) || (D1<=0.0 && D2>=0.0) || (D3>=0.0 && D4<=0.0) || (D3<=0.0 && D4>=0.0)){
-            return 0.0;
+        return 0.0;
     }
     else{
         if (abs(D1)<=abs(D2)){
@@ -106,13 +126,13 @@ double Grid2D::minmod_Cell(double D1, double D2, double D3, double D4){
             return D2;
         }
         else{
-            cout<<"Warning! Case not found in minmod."<<endl;
+            cout<<"Warning! Case not found in minmod. D1="<<D1<<" D2=" << D2 <<" D3=" << D3<<" D4=" << D4<<endl;
         }
     }
 }
 
 //________________
-double Grid2D::dx_forward(vector<double> function, int n){
+double Grid2D::dx_forward(vector<double> &function, int n){
     try {
         // Check to see if gridpoint falls on the left boundary
         if (n % N <= 10e-7) {
@@ -133,7 +153,7 @@ double Grid2D::dx_forward(vector<double> function, int n){
 }
 
 \
-double Grid2D::dx_backward(vector<double> function, int n){
+double Grid2D::dx_backward(vector<double> &function, int n){
     try{
         //cout<<n-(N-1) << '\n';
         // Check to see if gridpoint falls on the right boundary
@@ -152,7 +172,7 @@ double Grid2D::dx_backward(vector<double> function, int n){
     }
 }
 
-double Grid2D::dy_forward(vector<double> function, int n){
+double Grid2D::dy_forward(vector<double> &function, int n){
     try{
         if (n <= M-1){
             // First order discretization of the first derivative at the boundary and no flux BC, thus Qij = Qij-1
@@ -169,7 +189,7 @@ double Grid2D::dy_forward(vector<double> function, int n){
     }
 }
 
-double Grid2D::dy_backward(vector<double> function, int n){
+double Grid2D::dy_backward(vector<double> &function, int n){
     try{
         if (n <= M*N-1 && n>=(M*N)-(M)){
             // First order discretization of the first derivative at the boundary and no flux BC, thus Qij+1 = Qij
@@ -188,7 +208,7 @@ double Grid2D::dy_backward(vector<double> function, int n){
     }
 }
 
-double Grid2D::dy_centered(vector<double> function, int n){
+double Grid2D::dy_centered(vector<double> &function, int n){
     try{
         if (n <= M-1 && n>=0){
             // First order discretization of the first derivative at the boundary and no flux BC, thus Qij+1 = Qij
@@ -217,7 +237,7 @@ double Grid2D::dy_centered(vector<double> function, int n){
     }
 }
 
-double Grid2D::dx_centered(vector<double> function, int n){
+double Grid2D::dx_centered(vector<double> &function, int n){
     try{
         if (n % N <= 10e-7){
             // First order discretization of the first derivative at the boundary and no flux BC, thus Qij+1 = Qij
@@ -257,24 +277,25 @@ void Grid2D::initialize_VTK_file(std::string file_name){
     for (int n=0; n<N*M; n++){
         fprintf(outFile,"%e %e %e\n",x_from_n(n), y_from_n(n), 0.0);
     }
-   // // then output the list of cells. each cell is composed of four nodes
-   // fprintf(outFile,"CELLS %d %d \n",(N-1)*(M-1),5*(N-1)*(M-1));
-   // for (int i=0; i<N-1; i++){
-   //     for (int j=0; j<M-1; j++) {
-   //         node_of_cell[0] = n_from_ij(i  ,j  );
-   //         node_of_cell[1] = n_from_ij(i+1,j  );
-   //         node_of_cell[2] = n_from_ij(i+1,j+1);
-   //         node_of_cell[3] = n_from_ij(i  ,j+1);
-   //         fprintf(outFile,"%d %d %d %d %d\n",4,node_of_cell[0], node_of_cell[1], node_of_cell[2], node_of_cell[3]);
-   //     }
-   // }
-   // fprintf(outFile,"CELL_TYPES %d \n",(N-1)*(M-1));
+     // then output the list of cells. each cell is composed of four nodes
+     fprintf(outFile,"CELLS %d %d \n",(N-1)*(M-1),5*(N-1)*(M-1));
+     for (int i=0; i<N-1; i++){
+         for (int j=0; j<M-1; j++) {
+             node_of_cell[0] = n_from_ij(i  ,j  );
+             node_of_cell[1] = n_from_ij(i+1,j  );
+             node_of_cell[2] = n_from_ij(i+1,j+1);
+             node_of_cell[3] = n_from_ij(i  ,j+1);
+             fprintf(outFile,"%d %d %d %d %d\n",4,node_of_cell[0], node_of_cell[1], node_of_cell[2], node_of_cell[3]);
+         }
+     }
+     fprintf(outFile,"CELL_TYPES %d \n",(N-1)*(M-1));
 
-    for (int n=0; n<(N-1)*(M-1); n++){
-       // fprintf(outFile,"%d \n",9);
-        fprintf(outFile,"POINT_DATA %d \n",N*M);
-        fclose (outFile);
+    for (int n=0; n<(N-1)*(M-1); n++)
+    {
+        fprintf(outFile,"%d \n",9);
     }
+    fprintf(outFile,"POINT_DATA %d \n",N*M);
+    fclose (outFile);
 
 }
 

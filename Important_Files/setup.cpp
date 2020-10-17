@@ -1,7 +1,7 @@
 #include "setup.h"
 #include <iostream>
 #include <cmath>
-#include </Users/shaynabennett/Important_Files/grid2d.h>
+#include </Users/shaynabennett/MATH233_HOMEWORK/Important_Files/grid2d.h>
 #include <vector>
 
 using namespace std;
@@ -81,6 +81,15 @@ vector<double> Setup::initial_cond2(vector<double> X, vector<double> Y){
     vector<double> t0;
     for (int j=0;j<N*M;j++){
         t0.push_back(((sqrt((X[j]-0.25)*(X[j]-0.25)+Y[j]*Y[j]))-0.2));
+    }
+     return t0;
+}
+
+// Initial Condition 2
+vector<double> Setup::initial_condREN(vector<double> X, vector<double> Y){
+    vector<double> t0;
+    for (int j=0;j<N*M;j++){
+        t0.push_back(49*((sqrt((X[j]-0.25)*(X[j]-0.25)+Y[j]*Y[j]))-0.2));
     }
      return t0;
 }

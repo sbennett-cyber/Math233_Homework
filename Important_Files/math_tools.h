@@ -1,7 +1,7 @@
 #ifndef MATH_TOOLS_H
 #define MATH_TOOLS_H
 #include <vector>
-#include </Users/shaynabennett/Important_Files/grid2d.h>
+#include </Users/shaynabennett/MATH233_HOMEWORK/Important_Files/grid2d.h>
 
 class math_tools
 {
